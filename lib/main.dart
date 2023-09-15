@@ -1,22 +1,25 @@
+import 'package:articles_flutter/config/config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
+void main() async {
+  await Enviroment.initEnviroment();
+  runApp(
+      //widget que va a mantener una ref a todos los providers que estamos usando
+      const ProviderScope(child: MyApp()));
+}
+
+
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appRouter = ref.watch(goRouterProvider);
+    return MaterialApp.router(
+        routerConfig: appRouter,
+        theme: AppTheme().getTheme(),
+        debugShowCheckedModeBanner: false);
   }
 }
