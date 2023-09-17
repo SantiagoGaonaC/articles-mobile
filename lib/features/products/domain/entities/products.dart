@@ -3,13 +3,13 @@ class Products {
   final String vendor;
   final String productName;
   final int rating;
-  final String imgUrl;
+  final String imageUrl;
 
   Products({
     required this.id,
     required this.vendor,
     required this.productName,
     required this.rating,
-    required this.imgUrl,
+    required this.imageUrl,
   });
 }
