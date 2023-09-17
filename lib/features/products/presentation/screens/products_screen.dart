@@ -41,6 +41,7 @@ class _ProductsView extends ConsumerStatefulWidget {
 class _ProductsViewState extends ConsumerState<_ProductsView> {
   final ScrollController scrollController = ScrollController();
   int stateCrossAxis = 1;
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +54,6 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
   void dispose() {
     scrollController.dispose();
     super.dispose();
-    // TODO: scroll infinito pendiente
   }
 
   void toggleCrossAxisCount() {
@@ -70,12 +70,14 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          // Botón en la parte superior
-          ElevatedButton(
-            onPressed: toggleCrossAxisCount,
-            child: const Text("Cambiar columnas"),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton(
+              onPressed: toggleCrossAxisCount,
+              child: const Icon(Icons.swap_horiz_rounded, size: 35),
+            ),
           ),
-          // Vista de productos
+          const SizedBox(height: 20),
           Expanded(
             child: MasonryGridView.count(
               physics: const BouncingScrollPhysics(),
@@ -86,13 +88,79 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
               itemBuilder: (context, index) {
                 final product = productState.products[index];
                 return Center(
-                  child: Text(product.productName),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: stateCrossAxis == 1
+                          ? Row(
+                              children: buildCardDetails(product),
+                            )
+                          : Column(
+                              children: buildCardDetails(product),
+                            ),
+                    ),
+                  ),
                 );
               },
             ),
           ),
         ],
       ),
+    );
+  }
+
+  List<Widget> buildCardDetails(product) {
+    if (stateCrossAxis == 1) {
+      return [
+        Image.network(product.imageUrl, width: 50, height: 50),
+        const SizedBox(width: 20),
+        Expanded(child: buildTextDetails(product)),
+      ];
+    } else {
+      return [
+        SizedBox(
+          height: 200,
+          width: double.infinity,
+          child: Image.network(product.imageUrl, fit: BoxFit.cover),
+        ),
+        const SizedBox(height: 20),
+        buildTextDetails(product),
+      ];
+    }
+  }
+
+  Widget buildTextDetails(product) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          product.productName,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          product.vendor,
+          style: const TextStyle(fontSize: 16),
+        ),
+        Row(
+          children: [
+            Text(
+              product.rating.toString(),
+              style: const TextStyle(fontSize: 16),
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.star,
+              color: Colors.yellow,
+              shadows: [
+                Shadow(
+                  color: Colors.black,
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
