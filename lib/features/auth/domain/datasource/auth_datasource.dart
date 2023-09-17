@@ -1,5 +1,3 @@
-
-
 import 'package:articles_flutter/features/auth/domain/domain.dart';
 
 abstract class AuthDataSource {

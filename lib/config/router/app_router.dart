@@ -2,7 +2,7 @@ import 'package:articles_flutter/features/auth/presentation/providers/auth_provi
 import 'package:articles_flutter/features/auth/presentation/screens/check_auth_status_screen.dart';
 import 'package:articles_flutter/features/auth/presentation/screens/login_screen.dart';
 import 'package:articles_flutter/features/auth/presentation/screens/register_screen.dart';
-import 'package:articles_flutter/features/produts/presentation/screens/products_screen.dart';
+import 'package:articles_flutter/features/products/presentation/screens/products_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'app_router_notifier.dart';

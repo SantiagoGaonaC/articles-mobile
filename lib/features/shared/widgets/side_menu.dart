@@ -51,16 +51,10 @@ class SideMenuState extends ConsumerState<SideMenu> {
             child: Text('Tony Stark', style: textStyles.titleSmall),
           ),
           const NavigationDrawerDestination(
-              icon: Icon(Icons.folder), label: Text('Files')),
-          const NavigationDrawerDestination(
-              icon: Icon(Icons.storage_outlined), label: Text('Storage')),
+              icon: Icon(Icons.folder), label: Text('Products')),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
             child: Divider(),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(28, 10, 16, 10),
-            child: Text('Other options'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -12,7 +12,7 @@ class AuthDataSourceImpl extends AuthDataSource {
   @override
   Future<User> checkAuthStatus(String token) async {
     try {
-      final response = await dio.get('/check-status',
+      final response = await dio.get('/validation-token',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       final user = UserMapper.userJsonToEntity(response.data);
       return user;

@@ -1,12 +1,12 @@
 class User {
-  final String uuid;
+  final int id;
   final String username;
   final int statusCode;
   final String message;
   final String token;
 
   User({
-    required this.uuid,
+    required this.id,
     required this.username,
     required this.statusCode,
     required this.message,
