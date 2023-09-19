@@ -2,7 +2,7 @@ class Products {
   final int id;
   final String vendor;
   final String productName;
-  final int rating;
+  final double rating;
   final String imageUrl;
   final bool isFavorite;
 
@@ -19,7 +19,7 @@ class Products {
     int? id,
     String? vendor,
     String? productName,
-    int? rating,
+    double? rating,
     String? imageUrl,
     bool? isFavorite,
   }) {
