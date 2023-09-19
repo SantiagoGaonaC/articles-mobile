@@ -14,7 +14,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final productsProvider =
     StateNotifierProvider<ProductsNotifier, ProductsState>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-
   return ProductsNotifier(productsRepository: productsRepository);
 });
 
