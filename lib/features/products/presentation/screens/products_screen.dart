@@ -103,7 +103,6 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
           const SizedBox(height: 20),
           Expanded(
             child: MasonryGridView.count(
-              physics: const BouncingScrollPhysics(),
               crossAxisCount: stateCrossAxis,
               mainAxisSpacing: 20,
               crossAxisSpacing: 20,
@@ -144,7 +143,7 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
         SizedBox(
           height: 200,
           width: double.infinity,
-          child: Image.network(product.imageUrl, fit: BoxFit.cover),
+          child: Image.network(product.imageUrl, fit: BoxFit.contain),
         ),
         const SizedBox(height: 20),
         buildTextDetails(product),
@@ -154,11 +153,14 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
 
   Widget buildTextDetails(product) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           product.productName,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
         Text(
           product.vendor,
