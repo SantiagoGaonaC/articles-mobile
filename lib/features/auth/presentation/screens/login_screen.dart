@@ -3,7 +3,6 @@ import 'package:articles_flutter/features/auth/presentation/providers/login_form
 import 'package:articles_flutter/features/shared/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -111,17 +110,6 @@ class _LoginForm extends ConsumerWidget {
                 buttonColor: Colors.black,
                 onPressed: loginForm.isPosting ? null : ref.read(loginFormProvider.notifier).onFormSubmitted //si no posteo mando ref a la func
               )),
-          const Spacer(flex: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => context.push('/register'),
-                child: const Text('Create account',
-                    style: TextStyle(color: Color.fromRGBO(32, 159, 168, 1))),
-              )
-            ],
-          ),
           const Spacer(flex: 1),
         ],
       ),

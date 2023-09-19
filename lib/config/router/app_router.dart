@@ -1,7 +1,6 @@
 import 'package:articles_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:articles_flutter/features/auth/presentation/screens/check_auth_status_screen.dart';
 import 'package:articles_flutter/features/auth/presentation/screens/login_screen.dart';
-import 'package:articles_flutter/features/auth/presentation/screens/register_screen.dart';
 import 'package:articles_flutter/features/products/presentation/screens/products_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +24,6 @@ final goRouterProvider = Provider((ref) {
         path: '/login',
         builder: (context, state) => const LoginScreen(),
       ),
-      GoRoute(
-        path: '/register',
-        builder: (context, state) => const RegisterScreen(),
-      ),
 
       ///* ProductsDriveScreen Routes
       GoRoute(
@@ -47,19 +42,16 @@ final goRouterProvider = Provider((ref) {
       }
 
       if (authStatus == AuthStatus.notAuthenticated) {
-        if (isGoingTo == '/login' || isGoingTo == '/register') return null;
+        if (isGoingTo == '/login') return null;
 
         return '/login';
       }
 
       if (authStatus == AuthStatus.authenticated) {
-        if (isGoingTo == '/login' ||
-            isGoingTo == '/register' ||
-            isGoingTo == '/check-auth-status') {
+        if (isGoingTo == '/login' || isGoingTo == '/check-auth-status') {
           return '/';
         }
       }
-
       return null;
     },
   );

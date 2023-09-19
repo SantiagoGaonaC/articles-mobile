@@ -182,7 +182,6 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
               ),
               onPressed: () {
                 if (product.isFavorite) {
-                  print(product.isFavorite);
                   ref.read(productsProvider.notifier).removeFavorite(product);
                 } else {
                   ref.read(productsProvider.notifier).addFavorite(product);

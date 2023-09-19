@@ -42,7 +42,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> loginUser(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
-
     try {
       final user = await authRepository.login(email, password);
       _setLoggedUser(user);
@@ -51,13 +50,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       logout('Something went wrong');
     }
-
     //final user = await authRepository.login(email, password);
     //state = state.copyWith(user: user, authStatus: AuthStatus.authenticated); //copia del usuario donde ya tengo el estado
   }
 
-  //TODO: implementar el registro
-  void registerUser(String email, String password) async {}
   //Ver si es valido el token que contiene el usuario
   void checkAuthStatus() async {
     final token = await keyValueStorageService.getValue<String>('token');
