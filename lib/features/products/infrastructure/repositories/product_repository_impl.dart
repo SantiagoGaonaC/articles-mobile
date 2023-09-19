@@ -4,7 +4,7 @@ import 'package:articles_flutter/features/products/domain/repositories/product_r
 
 class ProductsRepositoryImpl extends ProductsRepository {
   final ProductsDataSource dataSources;
-  
+
   ProductsRepositoryImpl(this.dataSources);
 
   @override
@@ -18,13 +18,16 @@ class ProductsRepositoryImpl extends ProductsRepository {
   }
 
   @override
-  Future<Products> addFavorite(String id, ) {
-    return dataSources.addFavorite(id);
+  Future<Products> addFavorite(
+    Products product,
+  ) {
+    return dataSources.addFavorite(product);
   }
 
   @override
-  Future<Products> removeFavorite(String id, ) {
-    return dataSources.removeFavorite(id);
+  Future<Products> removeFavorite(
+    Products product,
+  ) {
+    return dataSources.removeFavorite(product);
   }
-
 }

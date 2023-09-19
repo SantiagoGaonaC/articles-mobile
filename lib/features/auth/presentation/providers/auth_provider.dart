@@ -7,9 +7,12 @@ DataSource tiene las conexiones e implementaciones necesarias
 */
 
 import 'package:articles_flutter/features/auth/infrastructure/infrastructure.dart';
+import 'package:articles_flutter/features/products/infrastructure/helpers/database_helper.dart';
 import 'package:articles_flutter/features/shared/infrastructure/services/key_value_storage_impl.dart';
 import 'package:articles_flutter/features/shared/infrastructure/services/key_value_storage_services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 import '../../domain/domain.dart';
 
 /*
@@ -55,12 +58,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   //TODO: implementar el registro
   void registerUser(String email, String password) async {}
-
-//ver si es valido el token que contiene el usuario
+  //Ver si es valido el token que contiene el usuario
   void checkAuthStatus() async {
     final token = await keyValueStorageService.getValue<String>('token');
     if (token == null) return logout();
-
     try {
       //el repositorio hace la auth
       final user = await authRepository.checkAuthStatus(token);
@@ -72,17 +73,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void _setLoggedUser(User user) async {
     await keyValueStorageService.setKeyValue('token', user.token);
-
+    await DatabaseHelper.instance.initDatabase();
     state = state.copyWith(
         user: user, errorMessage: '', authStatus: AuthStatus.authenticated);
   }
 
   Future<void> logout([String? errorMessage]) async {
+    await deleteFavoritesDatabase();
     await keyValueStorageService.removeKey('token');
     state = state.copyWith(
-        user: null,
-        errorMessage: errorMessage,
-        authStatus: AuthStatus.notAuthenticated);
+      user: null,
+      errorMessage: errorMessage,
+      authStatus: AuthStatus.notAuthenticated,
+    );
+  }
+
+  Future<void> deleteFavoritesDatabase() async {
+    final documentsDirectory = await getDatabasesPath();
+    final path = join(documentsDirectory, "myapp.db");
+    final exists = await databaseExists(path);
+    if (exists) {
+      await deleteDatabase(path);
+    }
   }
 }
 

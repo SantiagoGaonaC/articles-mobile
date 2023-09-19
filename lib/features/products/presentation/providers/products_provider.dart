@@ -1,5 +1,11 @@
-//El state es como quiero que se vea la info del stado del provider products
-// STATE - NOTIFIER - PROVIDER
+/*
+El state es como quiero que se vea la info del stado del provider products
+STATE - NOTIFIER - PROVIDER
+Provider va a consumir el (Repositorio -> DataSource -> Backend)
+DataSource tiene las conexiones e implementaciones necesarias
+El provider Tiene la implementación del repositorio, el cual se conecta al dataSource
+Nos permite a nosotros llegar a nuestro backend directamente
+*/
 import 'package:articles_flutter/features/products/domain/entities/products.dart';
 import 'package:articles_flutter/features/products/domain/repositories/product_repository.dart';
 import 'package:articles_flutter/features/products/presentation/providers/products_repository_provider.dart';
@@ -22,57 +28,66 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
   /*
   Necesito hacer el repositorio para poder hacer la petición (que cumpla la condición y que esté instanciado) 
   */
-  Future loadNextPage() async {
-    if (state.isLoading || state.isLastPage) {
-      return; //si esta cargando o es la ultima pagina no hago nada
-    }
+  Future loadNextPage({bool loadFavorites = false}) async {
+    final products = loadFavorites
+        ? await productsRepository.getFavorites()
+        : await productsRepository.getProducts();
 
-    state = state.copyWith(isLoading: true); //cambio el estado a isLoading true
-
-    final products =
-        await productsRepository.getProducts(); //TODO: limit y offset
-
-    if (products.isEmpty) {
-      state = state.copyWith(isLoading: false, isLastPage: true);
-      return;
-    }
+    final updatedProducts = products.map((p) {
+      final isFavorite = state.products.any((existingProduct) =>
+          existingProduct.id == p.id && existingProduct.isFavorite);
+      return p.copyWith(isFavorite: isFavorite);
+    }).toList();
 
     state = state.copyWith(
-      isLastPage: false,
-      isLoading: false,
-      offset: state.offset + 10,
-      products: [...state.products, ...products],
+      products: updatedProducts.isEmpty ? state.products : updatedProducts,
     );
+  }
+
+  Future addFavorite(Products product) async {
+    try {
+      await productsRepository.addFavorite(product);
+      final updatedProducts = state.products.map((p) {
+        if (p.id == product.id) {
+          return p.copyWith(isFavorite: true);
+        }
+        return p;
+      }).toList();
+      state = state.copyWith(products: updatedProducts);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future removeFavorite(Products product) async {
+    try {
+      await productsRepository.removeFavorite(product);
+      final updatedProducts = state.products.map((p) {
+        if (p.id == product.id) {
+          return p.copyWith(isFavorite: false);
+        }
+        return p;
+      }).toList();
+      state = state.copyWith(
+        products: updatedProducts,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
 class ProductsState {
-  final bool isLastPage; //si es la ultima pagina
-  final int limit; // cuantos productos quiero que se muestren 10 en 10 20 en 20
-  final int offset; // desde donde quiero que empiece a mostrar
-  final bool isLoading; // si esta cargando
   final List<Products> products; // lista de productos
 
   ProductsState({
-    this.isLastPage = false,
-    this.limit = 10,
-    this.offset = 0,
-    this.isLoading = false,
     this.products = const [],
   });
 
   ProductsState copyWith({
-    bool? isLastPage,
-    int? limit,
-    int? offset,
-    bool? isLoading,
     List<Products>? products,
   }) {
     return ProductsState(
-      isLastPage: isLastPage ?? this.isLastPage,
-      limit: limit ?? this.limit,
-      offset: offset ?? this.offset,
-      isLoading: isLoading ?? this.isLoading,
       products: products ?? this.products,
     );
   }

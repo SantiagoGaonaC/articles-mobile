@@ -1,3 +1,4 @@
+import 'package:articles_flutter/features/products/domain/entities/products.dart';
 import 'package:articles_flutter/features/products/presentation/providers/products_provider.dart';
 import 'package:articles_flutter/features/shared/widgets/side_menu.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,8 @@ class _ProductsView extends ConsumerStatefulWidget {
 class _ProductsViewState extends ConsumerState<_ProductsView> {
   final ScrollController scrollController = ScrollController();
   int stateCrossAxis = 1;
+  bool showFavorites = false;
+  bool showOnlyFavorites = false;
 
   @override
   void initState() {
@@ -50,10 +53,10 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
     });
   }
 
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
+  void toggleShowFavorites() {
+    setState(() {
+      showOnlyFavorites = !showOnlyFavorites;
+    });
   }
 
   void toggleCrossAxisCount() {
@@ -65,18 +68,38 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
   @override
   Widget build(BuildContext context) {
     final productState = ref.watch(productsProvider);
+    List<Products> filteredProducts;
+
+    if (showOnlyFavorites) {
+      filteredProducts =
+          productState.products.where((p) => p.isFavorite).toList();
+    } else {
+      filteredProducts = productState.products;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-              onPressed: toggleCrossAxisCount,
-              child: const Icon(Icons.swap_horiz_rounded, size: 35),
-            ),
-          ),
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: toggleShowFavorites,
+                    child: Icon(
+                      showOnlyFavorites
+                          ? Icons.favorite
+                          : Icons.favorite_border_outlined,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: toggleCrossAxisCount,
+                    child: const Icon(Icons.swap_horiz_rounded, size: 35),
+                  ),
+                ],
+              )),
           const SizedBox(height: 20),
           Expanded(
             child: MasonryGridView.count(
@@ -84,9 +107,9 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
               crossAxisCount: stateCrossAxis,
               mainAxisSpacing: 20,
               crossAxisSpacing: 20,
-              itemCount: productState.products.length,
+              itemCount: filteredProducts.length,
               itemBuilder: (context, index) {
-                final product = productState.products[index];
+                final product = filteredProducts[index];
                 return Center(
                   child: Card(
                     child: Padding(
@@ -148,15 +171,21 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
               style: const TextStyle(fontSize: 16),
             ),
             const Spacer(),
-            const Icon(
-              Icons.star,
-              color: Colors.yellow,
-              shadows: [
-                Shadow(
-                  color: Colors.black,
-                  blurRadius: 2,
-                ),
-              ],
+            IconButton(
+              icon: Icon(
+                product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border_outlined,
+                size: 35,
+              ),
+              onPressed: () {
+                if (product.isFavorite) {
+                  print(product.isFavorite);
+                  ref.read(productsProvider.notifier).removeFavorite(product);
+                } else {
+                  ref.read(productsProvider.notifier).addFavorite(product);
+                }
+              },
             ),
           ],
         ),
