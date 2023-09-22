@@ -23,7 +23,7 @@ git clone https://github.com/SantiagoGaonaC/articles_mobile.git
 
 ## Development
 
-- Make sure you setup the application [backend](https://github.com/SantiagoGaonaC/articles_mobile) by running:
+- Make sure you setup the application [backend](https://github.com/SantiagoGaonaC/articles-service) by running:
 
 ```shell
 docker compose up -d
