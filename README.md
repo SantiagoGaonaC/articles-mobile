@@ -4,7 +4,7 @@
 
 ## Description
 
-This repo is an complement of [articles-service](https://github.com/SantiagoGaonaC/articles_mobile)
+This repo is an complement of [articles-service](https://github.com/SantiagoGaonaC/articles-service)
 
 ## Features
 
